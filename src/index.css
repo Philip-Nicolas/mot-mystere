@@ -1,5 +1,5 @@
 body {
-	font: 14px "Century Gothic", Futura, sans-serif;
+	font: 28px "Century Gothic", Futura, sans-serif;
 	margin: 20px;
 }
 
@@ -7,43 +7,51 @@ ol, ul {
 	padding-left: 30px;
 }
 
-.board-row:after {
-	clear: both;
-	content: "";
-	display: table;
-}
-
-.board-row button:not([disabled]):hover {
-	background: #eee;
-}
-
 .status {
 	margin-top: 10px;
 }
 
+.grid-container {
+	display: inline-grid;
+	/*grid-template-columns: repeat(9, 64px);*/
+	grid-template-rows: repeat(2, 64px);
+	grid-gap: 0;
+}
+
+.grid-container[id="keyboard"] {
+	grid-template-columns: repeat(9, 64px);
+}
+
+.grid-container[id="display"] {
+	grid-template-columns: repeat(24, 64px);
+}
+
 .square {
 	background: #fff;
-	border: 1px solid #666;
-	float: left;
-	font-size: 24px;
 	font-weight: bold;
-	line-height: 34px;
-	height: 34px;
-	margin-right: -1px;
-	margin-top: -1px;
-	padding: 0;
 	text-align: center;
-	width: 34px;
+	font-size: 44px;
+	width: 64px;
+	height: 64px;
+	padding: 0;
 }
 
-.square[spacer="true"] {
-	width: 34px;
-	border-top: #fff;
-	border-bottom: #fff;
+.square[space] {
+	border: hidden;
 }
 
-.square[hidden="true"] {
-	color: #fff;
+.square:not([disabled]):hover {
+	background: #eee;
+}
+
+.square:disabled {
+	font-weight: normal;
+	color: #aaa;
+}
+
+.grid-container[id="display"] .square:disabled {
+	color: unset;
+	font-weight: bold;
 }
 
 .square:focus {
