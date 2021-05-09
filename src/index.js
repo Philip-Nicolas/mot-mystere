@@ -16,9 +16,11 @@ function Square(props) {
 }
 
 function CharacterRow(props) {
+  const chars = (props.str && props.str.split("")) || props.chars
+
   return (
     <div className="grid-container" id={props.id}>{
-      props.str.split("").map(c => {
+      chars.map(c => {
         // hide or show the character based on hidden/shown letters
         let disabled = (props.hide && props.hide.includes(c)) || (props.show && !props.show.includes(c));
 
@@ -33,16 +35,27 @@ function CharacterRow(props) {
 }
 
 class Game extends React.Component {
+  static startingLives = 10
+
   constructor(props) {
     super(props);
 
     this.state = {
-      guessedChars: [" "]
+      guessedChars: [" "],
+      lives: Game.startingLives,
     }
   }
 
   renderLives() {
-
+    const chars = Array(Game.startingLives + 1)
+    chars.fill("💚", 0, this.state.lives)
+    chars.fill("", this.state.lives, 10)
+    return (
+      <div>
+        <div className="status">Vies: {this.state.lives}</div>
+        <CharacterRow id="display" chars={chars} read-only="true"/>
+      </div>
+    )
   }
 
   renderWord() {
@@ -57,7 +70,8 @@ class Game extends React.Component {
   renderKeyboard() {
     const addGuessedChar = (c) => {
       const newState = {
-        guessedChars: this.state.guessedChars.slice()
+        guessedChars: this.state.guessedChars.slice(),
+        lives: this.state.lives - !this.props.str.includes(c),
       }
       newState.guessedChars.push(c)
       this.setState(newState)
@@ -77,6 +91,7 @@ class Game extends React.Component {
         <div className="game-board">
           {this.renderWord()}
           {this.renderKeyboard()}
+          {this.renderLives()}
         </div>
       </div>
     );
