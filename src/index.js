@@ -2,86 +2,92 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-class Square extends React.Component {
-	constructor(props) {
-		super(props);
-		this.onClick = this.props.onClick;
-	}
-
-	render() {
-		const spacer = this.props.value === " " ? "true" : ""
-		return (
-			<button
-				className="square"
-				spacer={spacer}
-				onClick={this.onClick}
-				disabled={this.props.disabled}>
-				{this.props.value}
-			</button>
-		);
-	}
+function Square(props) {
+  const space = props.label === " " ? "true" : false
+  return (
+    <button
+      className="square"
+      space={space}
+      onClick={() => props.onClick(props.label)}
+      disabled={space || props.disabled}>
+      {props.label}
+    </button>
+  );
 }
 
-class CharacterRow extends React.Component {
-	constructor(props) {
-		super(props)
-		this.state = {
-			chars: this.props.str.split(""),
-		}
+function CharacterRow(props) {
+  return (
+    <div className="grid-container" id={props.id}>{
+      props.str.split("").map(c => {
+        // hide or show the character based on hidden/shown letters
+        let disabled = (props.hide && props.hide.includes(c)) || (props.show && !props.show.includes(c));
 
-		console.log("hide", this.props.hide)
-		if (this.props.hide==="true")
-			this.state.chars = this.state.chars.map(c => c === " " ? " " : "")
-		
-		console.log(this.state.chars)
-	}
-
-	handleClick (i) {
-		const { chars } = this.state;
-		chars[i] = "";
-		this.setState({ chars });
-	}
-
-	render() {
-		return (
-			<div className="board-row">{
-				this.state.chars.map((c, i) =>
-					(<Square
-						value={c}
-						onClick={() => this.handleClick(i)}
-						disabled={this.props.disabled}
-					/>)
-				)
-			}</div>
-		);
-	}
+        return (<Square
+          label={disabled && props.hideDisabled ? "" : c}
+          onClick={props.handleClick}
+          disabled={disabled || props["read-only"] ? "true":false}
+        />)
+      })
+    }</div>
+  );
 }
 
 class Game extends React.Component {
-	render() {
-		return (
-			<div className="game">
-				<div className="game-board">
-					<div className="status">Mot Mystere</div>
-					<CharacterRow str="onomatopée de bébé" hide="true" disabled/>
-					<div className="status">Clavier</div>
-					<CharacterRow str="abcdefghi" disable="false"/>
-					<CharacterRow str="jklmnopqr"/>
-					<CharacterRow str="stuvwxyz"/>
-				</div>
-				<div className="game-info">
-					<div>{/* status */}</div>
-					<ol>{/* TODO */}</ol>
-				</div>
-			</div>
-		);
-	}
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      guessedChars: [" "]
+    }
+  }
+
+  renderLives() {
+
+  }
+
+  renderWord() {
+    return (
+      <div>
+        <div className="status">Mot Mystère</div>
+        <CharacterRow id="display" str={this.props.str} show={this.state.guessedChars} read-only="true" hideDisabled/>
+      </div>
+    )
+  }
+
+  renderKeyboard() {
+    const addGuessedChar = (c) => {
+      const newState = {
+        guessedChars: this.state.guessedChars.slice()
+      }
+      newState.guessedChars.push(c)
+      this.setState(newState)
+    }
+
+    return (
+      <div>
+        <div className="status">Clavier</div>
+        <CharacterRow id="keyboard" str="abcdefghijklmnopqrstuvwxyzéàûèêçïô" handleClick={addGuessedChar} hide={this.state.guessedChars} hideDisabled/>
+      </div>
+    )
+  }
+
+  render() {
+    return (
+      <div className="game">
+        <div className="game-board">
+          {this.renderWord()}
+          {this.renderKeyboard()}
+        </div>
+      </div>
+    );
+  }
 }
 
 // ========================================
 
 ReactDOM.render(
-	<Game />,
-	document.getElementById('root')
+  <Game str="onomatopée de bébé"/>
+  ,
+  document.getElementById('root')
 );
 
