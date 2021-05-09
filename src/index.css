@@ -3,18 +3,13 @@ body {
 	margin: 20px;
 }
 
-ol, ul {
-	padding-left: 30px;
-}
-
 .status {
-	margin-top: 10px;
+	margin-top: 20px;
 }
 
 .grid-container {
 	display: inline-grid;
 	/*grid-template-columns: repeat(9, 64px);*/
-	grid-template-rows: repeat(2, 64px);
 	grid-gap: 0;
 }
 
@@ -23,7 +18,7 @@ ol, ul {
 }
 
 .grid-container[id="display"] {
-	grid-template-columns: repeat(24, 64px);
+	grid-template-columns: repeat(22, 64px);
 }
 
 .square {
